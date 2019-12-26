@@ -1,0 +1,34 @@
+
+.word-display {
+  padding: .5em;
+  background-color: rgba(black, 0.6);
+  color: rgba(black, .9);
+
+  &.fail {
+    background-color: rgba(darkred, 0.6);
+  }
+
+  &.success {
+    background-color: rgba(green, 0.6);
+  }
+
+  .word {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+
+    .letter-block {
+      width: 2.6rem;
+      min-height: 2.6rem;
+      text-align: center;
+      background-color: rgba(white, .8);
+      box-shadow: inset 0 0 3px rgba(black, .5);
+
+      span {
+        font-size: 2rem;
+        text-transform: uppercase;
+      }
+    }
+  }
+}

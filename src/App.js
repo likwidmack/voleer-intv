@@ -1,17 +1,16 @@
 import React from 'react';
-import { Hangman } from './components';
+import { Container } from './components';
 
 import './App.css';
 
-const App = () => {
-  return (
-    <div className="App">
-      <div className="container">
-        <h1>React Hangman</h1>
-        <Hangman incorrectGuessCount={10}></Hangman>
+class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <Container className="container" />
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default App;

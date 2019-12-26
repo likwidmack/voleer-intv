@@ -102,7 +102,8 @@ const clearCanvas = canvas => {
 };
 
 /**
- * Draws the "Hangman" graphic with parts filled in according to the number of incorrect guesses.
+ * Draws the "Hangman" graphic with parts filled in according to the number of
+ * incorrect guesses.
  *
  * For example, to draw the first 5 parts of the hangman:
  *
