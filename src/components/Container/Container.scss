@@ -1,0 +1,9 @@
+.hangman-container {
+  width: 90%;
+  min-width: 350px;
+  margin: 0 auto;
+
+  .hangman {
+    overflow: hidden;
+  }
+}

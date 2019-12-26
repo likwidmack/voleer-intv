@@ -17,12 +17,14 @@ export class Form extends React.Component {
       <form id={`form_${word}`}>
         <TextInput label={'Input an Alphabetic Character'}
                    maxLength={1}
+                   defaultValue=''
                    name={word}
                    textHandler={inputHandler} />
 
         <div id={`selections_${word}`}>
-          <CheckBox label={'Reset with new Word'}
+          <CheckBox label={'Start with new Word'}
                     name={word}
+                    defaultChecked={true}
                     onChange={e => resetWord(e.target.checked)} />
 
           <Button type={'button'}

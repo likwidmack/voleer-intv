@@ -5,6 +5,7 @@ import { Hangman } from '../Hangman';
 import { Word } from '../Display';
 import './Container.scss';
 
+
 export function Container(props) {
   let o = {},
     history = {};
@@ -20,26 +21,57 @@ export function Container(props) {
         reset: true,
         word: false
       };
-
-      this.resetWord = (reset = false) => {
-        console.log('resetWord', this);
-        this.setState({ reset });
-      }
     }
 
     render() {
+      let { attempts, completion, character, letterArray, word } = this.state;
+
       return (
-        <div className="container">
-          <h1>React Hangman</h1>
-          <Form word={this.state.word}
-                inputHandler={e => this.inputHandler(e)}
-                resetWord={this.resetWord}
-                resetHangman={this.set} />
-
-          <Hangman incorrectGuessCount={this.state.attempts} />
-
-          <Word characters={this.state.letterArray}
-                completion={this.state.completion} />
+        <div className="grid-y medium-grid-frame">
+          <div className='cell shrink header medium-cell-block-container'>
+            <div className="grid-x grid-padding-x">
+              <div id='header-alerts' className={`cell auto ${completion ? '' : completion}`}>
+                <h1>React Hangman</h1>
+              </div>
+              <div className='cell shrink'>
+                <article>Alerts
+                  <div className='grid-x grid-margin-x'>
+                    <div className='cell auto'>{attempts}</div>
+                    <div className='cell auto'>{character}</div>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+          <div className='cell medium-auto medium-cell-block-container'>
+            <div className='grid-x grid-padding-x'>
+              <div className='cell medium-4 medium-cell-block-y'>
+                <Form word={word}
+                      inputHandler={e => this.inputHandler(e)}
+                      resetWord={v => this.resetWord(v)}
+                      resetHangman={e => this.set(e)} />
+                <div>
+                  {completion && completion === 'fail' ? (<div className='callout alert'>
+                    <h4>Answer:</h4>
+                    <span>{word}</span>
+                  </div>) : null}
+                </div>
+              </div>
+              <div className='cell medium-8 medium-cell-block-y'>
+                <div className='hangman-container callout'>
+                  <Hangman incorrectGuessCount={attempts} />
+                  <Word characters={letterArray}
+                        completion={completion} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='cell shrink footer'>
+            <div>
+              Events & Info
+              <p>{Object.keys(history)}</p>
+            </div>
+          </div>
         </div>
       );
     }
@@ -52,16 +84,20 @@ export function Container(props) {
       character = character || false;
       this.setState({ character });
 
-      const letter = o[this.state.character];
+      const letter = o[character];
+      console.log('currentLetter', character, letter, o);
 
-      if (history[letter]) return;
-      history[letter] = 1;
+      if (history[character]) {
+        console.warn('Already Tried this Letter');
+        return;
+      }
+      history[character] = 1;
 
       if (letter){
         letter.done = true;
         const { letterArray } = this.state;
         let indices = letter.i.split(',');
-        while (indices.length) letterArray[+indices.pop()] = letter;
+        while (indices.length) letterArray[+indices.pop()] = character;
         this.setState({ letterArray });
       } else {
         this.update(1);
@@ -78,7 +114,6 @@ export function Container(props) {
       history = {};
       o = {};
 
-      if (!this.state.word) return;
       for (let i = 0; i < word.length; i++) {
         const char = word[i];
         if (!o[char]) o[char] = {
@@ -92,22 +127,32 @@ export function Container(props) {
     inputHandler(event) {
       const character = event.target.value || "";
       if (!character.length) return;
+      if (!this.state.letterArray.length) {
+        console.warn('Please set hangman to play.');
+        return;
+      }
 
       this.currentLetter = character.toLowerCase();
       event.target.value = "";
       event.target.focus();
     }
 
+    resetWord(reset = false) {
+      this.setState({ reset });
+    }
+
     set() {
-      if (!this.state.word || this.state.reset) {
-        const reset = false, word = 'hangman'; // rword.generate();
-        this.setState({ word, reset });
+      let word = this.state.word;
+      if (!(word && word.length) || this.state.reset) {
+        const reset = false;
+        word = 'hangman'; // rword.generate();
         this.store = word;
+        this.setState({ word, reset });
       }
       this.setState({
         attempts: 0,
         completion: false,
-        letterArray: Array(this.state.word.length).fill('')
+        letterArray: Array(word.length).fill(null).map(v => '')
       });
     }
 
