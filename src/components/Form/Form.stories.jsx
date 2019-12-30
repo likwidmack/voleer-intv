@@ -1,5 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import Button from './Button';
 import CheckBox from './CheckBox';
 import TextInput from './TextInput';
@@ -51,9 +52,9 @@ class CheckboxStory extends React.Component {
   render() {
     return (
       <div>
-        <CheckBox isChecked={this.state.checked}
-                  name={this.props.name}
+        <CheckBox name={this.props.name}
                   label={this.state.text}
+                  defaultChecked={false}
                   onChange={e => this.change(e)} />
       </div>
     );
@@ -107,7 +108,12 @@ storiesOf('Form Components', module)
   })
   .add('Form', () => {
     return (<Form word={'awesome'}
-                  inputHandler={e => alert(e.target.value)}
-                  resetWord={() => alert('reset WORD')}
-                  resetHangman={e => alert(e.target.id)} />)
+                  inputHandler={e => action(e.target.value)}
+                  resetHangman={bool => action(`Resetting with checked ${bool}`)} />)
+  })
+  .add('Form Disabled', () => {
+    return (<Form word={'awesome'}
+                  isDisabled={ true }
+                  inputHandler={e => action(e.target.value)}
+                  resetHangman={bool => action(`Resetting with checked ${bool}`)} />)
 });

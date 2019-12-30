@@ -7,11 +7,11 @@ storiesOf('Word Display', module)
   const characters = Array(7).fill('');
   return (<Word characters={characters} completion={false} />);
 })
-.add('Partial', () => {
+.add('Partial & Fail', () => {
   const characters = ['','a','','g','','a',''];
   return (<Word characters={characters} completion={'fail'} />);
 })
-.add('Complete', () => {
+.add('Complete & Success', () => {
   const characters = [...'hangman'];
   return (<Word characters={characters} completion={'success'} />);
 });

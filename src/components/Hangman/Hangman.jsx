@@ -164,7 +164,7 @@ export const Hangman = ({ incorrectGuessCount = 0 }) => {
   }, [hangmanParts, incorrectGuessCount]);
 
   return (
-    <div className="Hangman" ref={containerRef}>
+    <div className="hangman" ref={containerRef}>
       <canvas ref={canvasRef} height={size} width={size}></canvas>
     </div>
   );
