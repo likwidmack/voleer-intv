@@ -1,33 +1,40 @@
 import React from 'react';
 import { Form } from '../Form';
 import { Hangman } from '../Hangman';
-// import { rword } from 'rword';
 import { Word } from '../Display';
 import './Container.scss';
 
+const count = 1;
+const getWordUrl = `http://localhost:9080/api/random/words/${count}?length=5-15`;
 
 export function Container(props) {
   let o = {},
-    history = {};
+    history = new Set();
 
   class Container extends React.Component {
+    letterArray = [];
+    completion = false;
     constructor(props) {
       super(props);
       this.state = {
         attempts: 0,
         character: false,
         completion: false,
-        letterArray: [],
-        reset: true,
+        disabled: false,
         word: false
       };
     }
 
+    componentDidMount() {
+      this.updateWord();
+    }
+
     render() {
-      let { attempts, completion, character, letterArray, word } = this.state;
+      let { attempts, character, disabled, word } = this.state;
+      let { completion, letterArray } = this;
 
       return (
-        <div className="grid-y medium-grid-frame">
+        <div className="grid-y medium-grid-frame container-wrapper">
           <div className='cell shrink header medium-cell-block-container'>
             <div className="grid-x grid-padding-x">
               <div id='header-alerts' className={`cell auto ${completion ? '' : completion}`}>
@@ -36,8 +43,8 @@ export function Container(props) {
               <div className='cell shrink'>
                 <article>Alerts
                   <div className='grid-x grid-margin-x'>
-                    <div className='cell auto'>{attempts}</div>
-                    <div className='cell auto'>{character}</div>
+                    <div className='cell auto callout'>{attempts}</div>
+                    <div className='cell auto callout'>{character}</div>
                   </div>
                 </article>
               </div>
@@ -47,9 +54,9 @@ export function Container(props) {
             <div className='grid-x grid-padding-x'>
               <div className='cell medium-4 medium-cell-block-y'>
                 <Form word={word}
-                      inputHandler={e => this.inputHandler(e)}
-                      resetWord={v => this.resetWord(v)}
-                      resetHangman={e => this.set(e)} />
+                      isDisabled={disabled}
+                      inputHandler={e => this.updateCharacter(e)}
+                      resetHangman={bool => this.updateWord(bool)} />
                 <div>
                   {completion && completion === 'fail' ? (<div className='callout alert'>
                     <h4>Answer:</h4>
@@ -69,7 +76,7 @@ export function Container(props) {
           <div className='cell shrink footer'>
             <div>
               Events & Info
-              <p>{Object.keys(history)}</p>
+              <p>{[...history]}</p>
             </div>
           </div>
         </div>
@@ -81,28 +88,29 @@ export function Container(props) {
     }
 
     set currentLetter(character) {
+      let { attempts } = this.state;
       character = character || false;
-      this.setState({ character });
 
       const letter = o[character];
       console.log('currentLetter', character, letter, o);
 
-      if (history[character]) {
+      if (history.has(character)) {
         console.warn('Already Tried this Letter');
         return;
       }
-      history[character] = 1;
+      history.add(character);
 
       if (letter){
         letter.done = true;
-        const { letterArray } = this.state;
         let indices = letter.i.split(',');
-        while (indices.length) letterArray[+indices.pop()] = character;
-        this.setState({ letterArray });
+        while (indices.length) this.letterArray[+indices.pop()] = character;
       } else {
-        this.update(1);
+        attempts += 1;
+        if (isNaN(attempts) || attempts > 10) attempts = 10;
       }
-      this.verify();
+
+      this.updateCompletion(attempts);
+      this.setState({ attempts, character });
     }
 
     get store() {
@@ -110,10 +118,7 @@ export function Container(props) {
     }
 
     set store(word) {
-      if (word === this.state.word) return;
-      history = {};
       o = {};
-
       for (let i = 0; i < word.length; i++) {
         const char = word[i];
         if (!o[char]) o[char] = {
@@ -124,68 +129,72 @@ export function Container(props) {
       }
     }
 
-    inputHandler(event) {
-      const character = event.target.value || "";
+    reset(word) {
+      history = new Set();
+      this.store = word;
+      this.letterArray = Array(word.length).fill(null).map(v => '');
+      this.completion = false;
+      this.setState({ attempts: 0, character: false });
+  }
+
+    updateCharacter(event) {
+      const {target} = event;
+      const character = target.value || '';
       if (!character.length) return;
-      if (!this.state.letterArray.length) {
+      if (!this.letterArray.length) {
         console.warn('Please set hangman to play.');
         return;
       }
 
       this.currentLetter = character.toLowerCase();
-      event.target.value = "";
-      event.target.focus();
+      target.value = '';
+      target.focus();
     }
 
-    resetWord(reset = false) {
-      this.setState({ reset });
-    }
-
-    set() {
-      let word = this.state.word;
-      if (!(word && word.length) || this.state.reset) {
-        const reset = false;
-        word = 'hangman'; // rword.generate();
-        this.store = word;
-        this.setState({ word, reset });
-      }
-      this.setState({
-        attempts: 0,
-        completion: false,
-        letterArray: Array(word.length).fill(null).map(v => '')
-      });
-    }
-
-    stop(completion = false) {
-      this.setState({
-        completion,
-        attempts: 0
-      });
-    }
-
-    update(interval = 0) {
-      let { attempts, completion } = this.state;
-      attempts += interval;
-
-      if (isNaN(attempts) || attempts > 10) attempts = 10;
-      if (attempts >= 10) completion = 'fail';
-
-      this.setState({
-        attempts,
-        completion
-      });
-    }
-
-    verify() {
-      let { state: { attempts }, store } = this;
-      if (attempts < 10) {
-        if (Object.values(store).every(v => v.done)){
-          this.stop('success');
-        }
+    updateCompletion(attempts) {
+      let { disabled } = this.state;
+  
+      disabled = true;
+      if (attempts < 10 && 
+        Object.values(this.store).every(v => v.done)){
+        this.completion = 'success';
+      } else if (attempts >= 10) {
+        this.completion = 'fail';
       } else {
-        this.stop('fail');
+        disabled = false;
       }
+      this.setState({ disabled });
     }
+
+    updateWord(useCurrentWord = false) {
+      this.setState({
+        disabled: true
+      });
+
+      if (useCurrentWord) {
+        history = new Set();
+        const {word} = this.state;
+        this.reset(word);
+        this.setState({ disabled: false });
+        return;
+      }
+
+      fetch(getWordUrl)
+        .then(res => res.json())
+        .then(data => {
+          const {words: [word]} = data;
+          this.reset(word);
+          this.setState({
+            disabled: false,
+            word
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          this.setState({ disabled: false });
+        });
+    }
+    
   }
 
   return (<Container {...props} />);
