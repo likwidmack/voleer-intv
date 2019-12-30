@@ -1,9 +1,13 @@
+.container-wrapper {
+  overflow: hidden;
+}
+
 .hangman-container {
   width: 90%;
   min-width: 350px;
   margin: 0 auto;
+  overflow: hidden;
 
   .hangman {
-    overflow: hidden;
   }
 }
