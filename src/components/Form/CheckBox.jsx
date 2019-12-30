@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function CheckBox (props) {
-  const { defaultChecked = false, isChecked, name } = props;
+  const { defaultChecked = false, isChecked, label, name, onChange, ...attrs } = props;
   const id = `checkbox_${name}`;
   return (
     <div className={(isChecked ? 'checked' : '')}>
@@ -9,8 +9,9 @@ export default function CheckBox (props) {
              id={id}
              name={'_'+name}
              defaultChecked={defaultChecked}
-             onChange={props.onChange} />
-      {props.label && (<label htmlFor={id}>{props.label}</label>)}
+             onChange={onChange}
+             {...attrs} />
+             {label && (<label htmlFor={id}>{label}</label>)}
     </div>
   )
 }

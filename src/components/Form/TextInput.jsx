@@ -4,7 +4,7 @@ export default function TextInput (props) {
   const { label, name, textHandler, ...attrs } = props;
   const id = `textInput_${name}`;
   return (
-    <div className={'text-input'}>
+    <div className={`text-input`}>
       <label htmlFor={id}>
         {label}
         <input id={id}

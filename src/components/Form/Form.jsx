@@ -5,34 +5,48 @@ import TextInput from './TextInput';
 import './Form.scss';
 
 export class Form extends React.Component {
+  constructor(...data) {
+    super(...data);
+    this.state = {
+      checked: false
+    }
+  }
   render() {
+    const {checked} = this.state;
     const {
       word = Date.now(),
+      isDisabled,
       inputHandler,
-      resetHangman,
-      resetWord
+      resetHangman
     } = this.props;
 
     return (
       <form id={`form_${word}`}>
         <TextInput label={'Input an Alphabetic Character'}
-                   maxLength={1}
                    defaultValue=''
+                   disabled={isDisabled}
                    name={word}
+                   maxLength={1}
                    textHandler={inputHandler} />
 
         <div id={`selections_${word}`}>
-          <CheckBox label={'Start with new Word'}
+          <CheckBox label={'Keep Current Word'}
+                    defaultChecked={false}
+                    disabled={!isDisabled}
                     name={word}
-                    defaultChecked={true}
-                    onChange={e => resetWord(e.target.checked)} />
+                    onChange={e => this.updateChecked(e)} />
 
           <Button type={'button'}
+                  disabled={!isDisabled}
                   name={word}
-                  onClick={resetHangman}
+                  onClick={e => resetHangman(checked)}
                   text={'Reset Hangman'} />
         </div>
       </form>
     );
+  }
+
+  updateChecked(e) {
+    this.setState({ checked: e.target.checked });
   }
 }
