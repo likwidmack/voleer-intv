@@ -5,5 +5,5 @@ export function Letter(props) {
     <div className={'letter-block'}>
       <span>{props.letter}</span>
     </div>
-  )
+  );
 }

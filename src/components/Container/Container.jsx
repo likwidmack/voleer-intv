@@ -41,8 +41,10 @@ export function Container(props) {
                 <h1>React Hangman</h1>
               </div>
               <div className="cell shrink header-bar">
-                <div className="grid-x grid-margin-x">
-                  <div className="cell shrink callout">{character}</div>
+                <div className="grid-x grid-margin-x align-middle">
+                  <div className={`cell shrink ${(character && 'callout primary') || ''}`}>
+                    <h2>{character}</h2>
+                  </div>
                   <div className="cell auto callout">
                     <p>Attempts remaining</p>
                     <div className="stat">{10 - attempts}</div>
@@ -61,13 +63,13 @@ export function Container(props) {
                   resetHangman={bool => this.updateWord(bool)}
                 />
                 <div>
-                  {completion && completion === 'fail' ? (
+                  {completion === 'fail' ? (
                     <div className="callout alert hangman-results">
                       <h4>Correct Answer</h4>
                       <span>{word}</span>
                     </div>
                   ) : null}
-                  {completion && completion === 'success' ? (
+                  {completion === 'success' ? (
                     <div className="callout success hangman-results">
                       <h4>Correct! Congratulations!</h4>
                     </div>
@@ -165,7 +167,8 @@ export function Container(props) {
 
       this.currentLetter = character.toLowerCase();
       target.value = '';
-      if (!this.completion) target.focus();
+      if (!this.completion || !this.state.disabled) target.focus();
+      else target.blur();
     }
 
     updateCompletion() {
@@ -188,7 +191,6 @@ export function Container(props) {
       });
 
       if (useCurrentWord) {
-        history = new Set();
         const { word } = this.state;
         this.reset(word);
         this.setState({ disabled: false });

@@ -4,38 +4,40 @@ import { action } from '@storybook/addon-actions';
 import Button from './Button';
 import CheckBox from './CheckBox';
 import TextInput from './TextInput';
-import {Form} from './Form';
+import { Form } from './Form';
 
 class ButtonStory extends React.Component {
   constructor(...data) {
     super(...data);
     this.state = {
       text: 'Story Button',
-      timer: null
-    }
+      timer: null,
+    };
   }
 
   render() {
     return (
       <div>
-        <Button type={'button'}
-                name={this.props.name}
-                onClick={e => this.onClick(e)}
-                text={this.state.text} />
+        <Button
+          type={'button'}
+          name={this.props.name}
+          onClick={e => this.onClick(e)}
+          text={this.state.text}
+        />
       </div>
     );
   }
 
   onClick(e) {
-    this.setState((state) => ({
+    this.setState(state => ({
       text: 'Button Clicked!',
       timer: setTimeout(() => {
         this.setState({
           timer: null,
-          text: 'Story Button'
+          text: 'Story Button',
         });
         clearTimeout(state.timer);
-      }, 2000)
+      }, 2000),
     }));
   }
 }
@@ -45,27 +47,29 @@ class CheckboxStory extends React.Component {
     super(...data);
     this.state = {
       checked: false,
-      text: 'Checkbox at Zero Time'
+      text: 'Checkbox at Zero Time',
     };
   }
 
   render() {
     return (
       <div>
-        <CheckBox name={this.props.name}
-                  label={this.state.text}
-                  defaultChecked={false}
-                  onChange={e => this.change(e)} />
+        <CheckBox
+          name={this.props.name}
+          label={this.state.text}
+          defaultChecked={false}
+          onChange={e => this.change(e)}
+        />
       </div>
     );
   }
 
   change(e) {
-    const {checked} = e.target;
+    const { checked } = e.target;
     this.setState({
       checked,
-      text: `${checked ? 'checked' : 'unchecked'} at ${(new Date()).toLocaleTimeString()}`
-    })
+      text: `${checked ? 'checked' : 'unchecked'} at ${new Date().toLocaleTimeString()}`,
+    });
   }
 }
 
@@ -73,47 +77,57 @@ class TextInputStory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: 'Label with no character'
+      text: 'Label with no character',
     };
   }
 
   render() {
     return (
       <div>
-        <TextInput label={this.state.text}
-                   maxLength={1}
-                   name={this.props.name}
-                   textHandler={e => this.handler(e)} />
+        <TextInput
+          label={this.state.text}
+          maxLength={1}
+          name={this.props.name}
+          textHandler={e => this.handler(e)}
+        />
       </div>
-    )
+    );
   }
 
   handler(e) {
-    const {value} = e.target;
+    const { value } = e.target;
     this.setState({
-      text: value.length ? `Label with character ${value}` : 'Label with no character'
-    })
+      text: value.length ? `Label with character ${value}` : 'Label with no character',
+    });
   }
 }
 
 storiesOf('Form Components', module)
   .add('Button', () => {
-    return (<ButtonStory name={'btnAwesome'} />);
+    return <ButtonStory name={'btnAwesome'} />;
   })
   .add('Checkbox', () => {
-    return (<CheckboxStory name={'chkAwesome'}/>);
+    return <CheckboxStory name={'chkAwesome'} />;
   })
   .add('TextInput', () => {
-    return (<TextInputStory name={'txtAwesome'}/>);
+    return <TextInputStory name={'txtAwesome'} />;
   })
   .add('Form', () => {
-    return (<Form word={'awesome'}
-                  inputHandler={e => action(e.target.value)}
-                  resetHangman={bool => action(`Resetting with checked ${bool}`)} />)
+    return (
+      <Form
+        word={'awesome'}
+        inputHandler={e => action(e.target.value)}
+        resetHangman={bool => action(`Resetting with checked ${bool}`)}
+      />
+    );
   })
   .add('Form Disabled', () => {
-    return (<Form word={'awesome'}
-                  isDisabled={ true }
-                  inputHandler={e => action(e.target.value)}
-                  resetHangman={bool => action(`Resetting with checked ${bool}`)} />)
-});
+    return (
+      <Form
+        word={'awesome'}
+        isDisabled={true}
+        inputHandler={e => action(e.target.value)}
+        resetHangman={bool => action(`Resetting with checked ${bool}`)}
+      />
+    );
+  });

@@ -1,8 +1,7 @@
-
 .word-display {
-  padding: .5em;
+  padding: 0.5em;
   background-color: rgba(black, 0.6);
-  color: rgba(black, .9);
+  color: rgba(black, 0.9);
 
   &.fail {
     background-color: rgba(darkred, 0.6);
@@ -17,13 +16,12 @@
     justify-content: space-evenly;
     align-items: center;
 
-
     .letter-block {
       width: 2.6rem;
       min-height: 3rem;
       text-align: center;
-      background-color: rgba(white, .8);
-      box-shadow: inset 0 0 3px rgba(black, .5);
+      background-color: rgba(white, 0.8);
+      box-shadow: inset 0 0 3px rgba(black, 0.5);
 
       span {
         font-size: 2rem;

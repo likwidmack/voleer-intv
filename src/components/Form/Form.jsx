@@ -8,39 +8,40 @@ export class Form extends React.Component {
   constructor(...data) {
     super(...data);
     this.state = {
-      checked: false
-    }
+      checked: false,
+    };
   }
   render() {
-    const {checked} = this.state;
-    const {
-      word = Date.now(),
-      isDisabled,
-      inputHandler,
-      resetHangman
-    } = this.props;
+    const { checked } = this.state;
+    const { word = Date.now(), isDisabled, inputHandler, resetHangman } = this.props;
 
     return (
       <form id={`form_${word}`}>
-        <TextInput label={'Input an Alphabetic Character'}
-                   defaultValue=''
-                   disabled={isDisabled}
-                   name={word}
-                   maxLength={1}
-                   textHandler={inputHandler} />
+        <TextInput
+          label={'Input an Alphabetic Character'}
+          defaultValue=""
+          disabled={isDisabled}
+          name={word}
+          maxLength={1}
+          textHandler={inputHandler}
+        />
 
         <div id={`selections_${word}`}>
-          <CheckBox label={'Keep Current Word'}
-                    defaultChecked={false}
-                    disabled={!isDisabled}
-                    name={word}
-                    onChange={e => this.updateChecked(e)} />
+          <CheckBox
+            label={'Keep Current Word'}
+            defaultChecked={false}
+            disabled={!isDisabled}
+            name={word}
+            onChange={e => this.updateChecked(e)}
+          />
 
-          <Button type={'button'}
-                  disabled={!isDisabled}
-                  name={word}
-                  onClick={e => resetHangman(checked)}
-                  text={'Reset Hangman'} />
+          <Button
+            type={'button'}
+            disabled={!isDisabled}
+            name={word}
+            onClick={e => resetHangman(checked)}
+            text={'Reset Hangman'}
+          />
         </div>
       </form>
     );
