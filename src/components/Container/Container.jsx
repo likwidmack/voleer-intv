@@ -16,8 +16,8 @@ export function Container(props) {
     completion = false;
     attempts = 0;
 
-    constructor(props) {
-      super(props);
+    constructor(...data) {
+      super(...data);
       this.state = {
         character: false,
         disabled: false,
